@@ -4,9 +4,11 @@
     "module": "ESNext",
     "jsx": "react-jsx",
     "declaration": true,
+    "outDir": "dist",
     "rootDir": "src",
     "moduleResolution": "Bundler",
-    "strict": true
+    "strict": true,
+    "lib": ["ESNext", "DOM"]
   },
   "include": ["src"]
 }

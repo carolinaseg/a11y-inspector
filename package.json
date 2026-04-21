@@ -1,17 +1,23 @@
 {
   "name": "a11yinspector",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Accessibility assistant for detecting UI issues in React applications.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "react"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "axe-core": "^4.11.3",
     "react": "^19.2.5"
   },
   "devDependencies": {

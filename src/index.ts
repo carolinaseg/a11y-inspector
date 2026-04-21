@@ -1,1 +1,1 @@
-export {};
+export { default as AccessibilityAssistantPanel } from "./components/accessibilityAssistentPanel";
