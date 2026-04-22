@@ -25,6 +25,7 @@ export type HighlightOptions = {
 export type Suggestion = {
   title: string;
   code: string;
+  link?: string;
 };
 
 export type AIFixState =

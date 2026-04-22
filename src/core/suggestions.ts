@@ -1,7 +1,5 @@
 import { Suggestion } from "../types/types";
 
-
-
 export function getSuggestion(
   issueId: string,
   nodeHtml?: string
@@ -50,8 +48,24 @@ export function getSuggestion(
             color: #fff;
             }`
       };
-
+    case "label": 
+    case "label-title-only":
+      return {
+        title: "Agregar un label accesible",
+        code: `<label for="input-id">Nombre</label>
+               <input id="input-id" type="text" />`
+      };
+    case "form-field-multiple-labels":
+      return {
+        title: "Evitar múltiples labels para un mismo input",
+        code: `<label for="email">Email</label>
+               <input id="email" type="email" />`
+      };  
     default:
-      return null;
+      return {
+      title: "No hay sugerencia específica",
+      code: "Revisar accesibilidad manualmente según WCAG",
+      link: `https://dequeuniversity.com/rules/axe/4.10/${issueId}`
+  };
   }
 }
