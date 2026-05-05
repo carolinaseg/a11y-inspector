@@ -1,9 +1,2 @@
-export * from './api/fetchAIFix';
-export * from './hooks/useA11yAudit';
-export * from './core/engine';
-export * from './core/highlight';
-export * from './core/suggestions';
-export * from './types/types';
-export * from './ui/accessibilityAssistentPanel/AccessibilityAssistantPanel.styles';
-export * from './ui/accessibilityAssistentPanel/AccessibilityAssistentPanel';
-export * from './ui/actionButton/ActionButton';
+export { default as AccessibilityAssistantPanel } from "./ui/AccessibilityAssistentPanel/AccessibilityAssistentPanel";
+export { useA11yAudit } from "./hooks/useA11yAudit";

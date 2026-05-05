@@ -1,9 +1,10 @@
 import type { JSX } from "react";
 import type { A11yIssue, AIFixState } from "../../types/types";
 import { getSuggestion } from "../../core/suggestions";
-import { aiBoxStyle, codeStyle, nodeStyle } from "../..";
-import ActionButton from "../actionButton/ActionButton";
+
+import ActionButton from "../ActionButton/ActionButton";
 import { issueStyle, suggestionBoxStyle } from "./IssueCard.styles";
+import { aiBoxStyle, codeStyle, nodeStyle } from "../AccessibilityAssistentPanel/AccessibilityAssistantPanel.styles";
 
 type Props = {
   issue: A11yIssue;

@@ -4,25 +4,56 @@ import type { A11yIssue } from "../types/types";
 export type A11yEngineResult = {
   issues: A11yIssue[];
   score: number;
+  breakdown: {
+    critical: number;
+    serious: number;
+    moderate: number;
+    minor: number;
+  };
 };
 
-function calculateA11yScore(violations: axe.Result[]) {
-  if (!violations.length) return 100;
+type Impact = "critical" | "serious" | "moderate" | "minor";
 
-  const impactWeights: Record<string, number> = {
-    critical: 4,
-    serious: 3,
-    moderate: 2,
-    minor: 1
+const impactWeights: Record<Impact, number> = {
+  critical: 4,
+  serious: 3,
+  moderate: 2,
+  minor: 1
+};
+
+export function calculateScore(issues: A11yIssue[]): number {
+  let totalWeight = 0;
+
+  issues.forEach((issue) => {
+    const impact = (issue.impact ?? "minor") as Impact;
+    totalWeight += impactWeights[impact];
+  });
+
+  const penalty = totalWeight * 2;
+
+  return Math.max(0, 100 - penalty);
+}
+
+export function getImpactBreakdown(issues: A11yIssue[]) {
+  return {
+    critical: issues.filter(i => i.impact === "critical").length,
+    serious: issues.filter(i => i.impact === "serious").length,
+    moderate: issues.filter(i => i.impact === "moderate").length,
+    minor: issues.filter(i => i.impact === "minor").length
   };
+}
 
-  const totalPenalty = violations.reduce((acc, v) => {
-    return acc + (impactWeights[v.impact ?? "minor"] ?? 1) * v.nodes.length;
-  }, 0);
+function normalizeSelector(target: unknown): string | null {
+  if (!target) return null;
 
-  const score = Math.max(100 - totalPenalty * 3, 0);
+  if (typeof target === "string") return target;
 
-  return Math.round(score);
+  if (Array.isArray(target)) {
+    const first = target[0];
+    return typeof first === "string" ? first : null;
+  }
+
+  return null;
 }
 
 function mapIssues(violations: axe.Result[]): A11yIssue[] {
@@ -31,15 +62,15 @@ function mapIssues(violations: axe.Result[]): A11yIssue[] {
     description: v.description,
     impact: v.impact ?? null,
     nodes: v.nodes.map((n) => {
-    const selector = normalizeSelector(n.target);
+      const selector = normalizeSelector(n.target);
 
-    return {
+      return {
         selector,
         html: n.html,
         element: selector
-        ? (document.querySelector(selector) as HTMLElement | null) ?? undefined
-        : undefined
-    };
+          ? (document.querySelector(selector) as HTMLElement | null) ?? undefined
+          : undefined
+      };
     })
   }));
 }
@@ -50,26 +81,13 @@ export async function runA11yEngine(): Promise<A11yEngineResult> {
   });
 
   const issues = mapIssues(results.violations);
-  const score = calculateA11yScore(results.violations);
+
+  const score = calculateScore(issues);
+  const breakdown = getImpactBreakdown(issues);
 
   return {
     issues,
-    score
+    score,
+    breakdown
   };
-}
-
-function normalizeSelector(target: unknown): string | null {
-  if (!target) return null;
-
-  // caso string directo
-  if (typeof target === "string") return target;
-
-  // caso array (lo más común en axe)
-  if (Array.isArray(target)) {
-    const first = target[0];
-    return typeof first === "string" ? first : null;
-  }
-
-  // cualquier otro caso (shadow dom complejo, etc.)
-  return null;
 }
