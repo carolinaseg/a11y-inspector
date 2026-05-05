@@ -1,12 +1,13 @@
 import { useState, type JSX } from "react";
 import { useA11yAudit } from "../../hooks/useA11yAudit";
 import type { A11yIssue, AIFixState } from "../../types/types";
-import { panelStyle, metaStyle, headerStyle, scoreStyle, issueContainerStyle, panelContentStyle } from "./AccessibilityAssistantPanel.styles";
+
 import { clearHighlights, highlightElements } from "../../core/highlight";
 import { fetchAIFix } from "../../api/fetchAIFix";
-import { buttonStyle } from "../actionButton/ActionButton.styles";
-import IssueCard from "../issueCard/IssueCard";
-import ActionButton from "../actionButton/ActionButton";
+import { buttonStyle } from "../ActionButton/ActionButton.styles";
+import IssueCard from "../IssueCard/IssueCard";
+import ActionButton from "../ActionButton/ActionButton";
+import { headerStyle, issueContainerStyle, metaStyle, panelContentStyle, panelStyle, scoreStyle } from "./AccessibilityAssistantPanel.styles";
 
 const AccessibilityAssistantPanel = (): JSX.Element  => {
   const { issues, runAudit, loading, lastRunAt, score } = useA11yAudit();
@@ -88,6 +89,12 @@ const AccessibilityAssistantPanel = (): JSX.Element  => {
     }
   }
 
+  const getScoreMessage = (score: number) => {
+  if (score >= 90) return "Buen nivel de accesibilidad";
+  if (score >= 70) return "Hay problemas a mejorar";
+  return "Accesibilidad crítica";
+};
+
   return (
     <div style={panelStyle}>
       {/* HEADER */}
@@ -102,6 +109,14 @@ const AccessibilityAssistantPanel = (): JSX.Element  => {
               "#7a1f1f"
             }}
           >
+            <span>
+              Score: {score}
+            </span>
+            {score !== null && (
+              <div style={{ fontSize: "12px", opacity: 0.8 }}>
+                {getScoreMessage(score)}
+              </div>
+            )}
             Score: {score}
           </span>
         )}

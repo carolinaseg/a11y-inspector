@@ -44,3 +44,10 @@ export type AIFixState =
       status: "error";
       message: string;
     };
+
+export type Breakdown = {
+  critical: number;
+  serious: number;
+  moderate: number;
+  minor: number;
+};
